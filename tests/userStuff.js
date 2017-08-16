@@ -5,9 +5,15 @@
 *
 */
 
+var apikey = process.env.APIKEY;
+var domain = process.env.DOMAIN;
+if(process.env.APIKEY === undefined || process.env.DOMAIN === undefined) {
+  console.log("No API key or domain");
+  process.exit(1);
+}
 
 var OktaAPI = require("../index.js");
-var okta = new OktaAPI("", "", false);
+var okta = new OktaAPI(apikey, domain);
 var should = require("should");
 var log = function(str, newline) {
 	if(newline == undefined) newline = false;
@@ -63,25 +69,26 @@ function checkPasswordOp()
 		d.should.have.property("resp").with.property("resetPasswordUrl");
 			ok();
 
+    deprovisionUser();
 		/*
 		*	expires a password, sets it a temp password
 		*/
-		okta.users.expirePassword(newUserId, true, function(d) {
-			checking("users.expirePassword give temp password");
-			d.should.have.property("resp").with.property("tempPassword");
-			ok();
-
-			/*
-			*	expire password, user has to change pw on next login
-			*/
-			okta.users.expirePassword(newUserId, null, function(d) {
-				checking("users.expirePassword no params");
-				d.should.have.property("resp");
-				ok();
-
-				deprovisionUser();
-			});
-		});
+		// okta.users.expirePassword(newUserId, true, function(d) {
+		// 	checking("users.expirePassword give temp password");
+		// 	d.should.have.property("resp").with.property("tempPassword");
+		// 	ok();
+    //
+		// 	/*
+		// 	*	expire password, user has to change pw on next login
+		// 	*/
+		// 	okta.users.expirePassword(newUserId, null, function(d) {
+		// 		checking("users.expirePassword no params");
+		// 		d.should.have.property("resp");
+		// 		ok();
+    //
+		// 		deprovisionUser();
+		// 	});
+		//});
 
 	});
 }
@@ -90,6 +97,7 @@ function checkPasswordOp()
 //gets called after checkGetUsers, needs newUserId to be set
 function checkCredentialOps()
 {
+	var secretAnswer = "eb1addff-860a-4082-ab07-4d5f449eda44";
 	/*
 	*	Change Password
 	*/
@@ -103,13 +111,13 @@ function checkCredentialOps()
 	/*
 	*	Change recovery
 	*/
-	okta.users.changeRecoveryQuestion(newUserId,{ "value": "superPass1" } , {"question" : "What happens when I update my question?", "answer": "My recovery credentials are updated" } , function(d) {
+	okta.users.changeRecoveryQuestion(newUserId,{ "value": "superPass1" } , {"question" : "What happens when I update my question?", "answer": secretAnswer } , function(d) {
 		checking("users.changeRecoveryQuestion");
 		d.should.have.property("resp").with.property("password");
 		ok();
 
 		//change pw, credentials version
-		okta.users.forgotPasswordRecovery(newUserId,{ "value": "superPass239" } ,{ "answer": "My recovery credentials are updated" } , function(d) {
+		okta.users.forgotPasswordRecovery(newUserId,{ "value": "superPass239" } ,{ "answer": secretAnswer } , function(d) {
 			checking("users.forgotPasswordRecovery");
 			d.should.have.property("resp").with.property("password");
 			ok();
@@ -341,10 +349,11 @@ function checkAddUser()
 
 function checkGetUser()
 {
+
 	/*
 	*	gets a user with their id, login or shortname
 	*/
-	okta.users.get("test@example.com", function(d) {
+	okta.users.get(newProfile.login, function(d) {
 		checking("okta.users.get");
 		d.should.have.property("success", true);
 		d.should.have.property("resp").with.property("id");
@@ -363,8 +372,6 @@ function checkGetUser()
 
 
 function main() {
-
-	checkGetUser();
 	checkAddUser();
 }
 

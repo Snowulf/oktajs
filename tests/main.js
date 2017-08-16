@@ -13,9 +13,8 @@ if(process.env.APIKEY === undefined || process.env.DOMAIN === undefined){
 var chai = require('chai');
 chai.should();
 
-// true bool for preview, why would you test in production?
 var OktaAPI = require('../index.js');
-var okta = new OktaAPI(apikey, domain, true);
+var okta = new OktaAPI(apikey, domain);
 
 
 describe('okta users', function() {

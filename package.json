@@ -2,7 +2,10 @@
   "name": "oktajs",
   "description": "An interface for the Okta REST API from nodejs",
   "author": "Jon Davis <jon@snowulf.com>",
-  "contributors":["Josh Johnson <jjohnson@okta.com>","Kevin He <kevin.he@okta.com>"],
+  "contributors": [
+    "Josh Johnson <jjohnson@okta.com>",
+    "Kevin He <kevin.he@okta.com>"
+  ],
   "tags": [
     "okta",
     "identity",
@@ -10,7 +13,8 @@
     "security"
   ],
   "dependencies": {
-      "request": "2.75.x"
+    "request": "2.75.x",
+    "should": "^11.2.1"
   },
   "devDependencies": {
     "chai": "3.5.x",
@@ -18,11 +22,11 @@
     "mocha": "3.1.x"
   },
   "repository": {
-      "type": "git",
-      "url": "http://github.com/snowulf/oktajs.git"
+    "type": "git",
+    "url": "http://github.com/snowulf/oktajs.git"
   },
   "bugs": {
-      "url": "http://github.com/snowulf/oktajs/issues"
+    "url": "http://github.com/snowulf/oktajs/issues"
   },
   "main": "index.js",
   "version": "3.0.2",

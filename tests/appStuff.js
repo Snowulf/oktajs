@@ -5,10 +5,17 @@
 *	Tests are chained, no way out of it that I can think of right now
 *
 */
-
+// Pull the API Key from enviromental variable
+// Which is embeded in travis-ci
+var apikey = process.env.APIKEY;
+var domain = process.env.DOMAIN;
+if(process.env.APIKEY === undefined || process.env.DOMAIN === undefined){
+  console.log("No API key or domain");
+  process.exit(1);
+}
 
 var OktaAPI = require("../index.js");
-var okta = new OktaAPI("", "", false);
+var okta = new OktaAPI(apikey, domain);
 var should = require("should");
 var log = function(str, newline) {
 	if(newline == undefined) newline = false;
@@ -26,7 +33,7 @@ var appId, newUserId, gid1, gid2;
 var newProfile = okta.users.helpers.constructProfile("Timothy", "McGee", "tmcgee+" + now + "@test.com");
 var newCreds = okta.users.helpers.constructCredentials("superPass1", "What is my favorite book?", "Deep Six");
 var appModel = okta.apps.helpers.constructAppGroupModel();
-var appModelOldWay = OktaAPI.Helpers.constructAppGroupModel();
+var appModelOldWay = okta.apps.helpers.constructAppGroupModel();
 
 /*
 *	a bunch of profiles, grabbed these from Okta docs
@@ -327,7 +334,7 @@ function checkAppUserOps()
 
 function checkAppOps()
 {
-	var newProfile = OktaAPI.Helpers.constructGroup("Test-" + now, "Test group from " + now);
+	var newProfile = okta.groups.helpers.constructGroup("Test-" + now, "Test group from " + now);
 
 
     /*
